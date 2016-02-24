@@ -4,7 +4,7 @@ import Stack
 
 test :: String
 test = do
-    let e = flex "5 2 + 3 1 - *"
+    let e = flex "5.3 2.20 + 3 1 - * 3 /"
     showStack $ parse e empty
 
 showStack :: Maybe (Stack String) -> String
@@ -25,7 +25,8 @@ parse (Just x:xs) s
     | t == "Op" =
         let res = case a of "+" -> (+)
                             "-" -> (-)
-                            otherwise -> (*)
+                            "*" -> (*)
+                            otherwise -> (/)
         in parse xs $ push (toString ((fmap res (toInt a2)) <*> (toInt a1))) s2
     | t == "End" = Just s
     | otherwise = Nothing
@@ -33,11 +34,11 @@ parse (Just x:xs) s
           (a1, s1) = pop s
           (a2, s2) = pop s1
 
-toInt :: Maybe String -> Maybe Int
+toInt :: Maybe String -> Maybe Float
 toInt Nothing = Nothing
 toInt (Just "") = Nothing
-toInt (Just n) = Just (read n :: Int)
+toInt (Just n) = Just (read n :: Float)
 
-toString :: Maybe Int -> String
+toString :: Maybe Float -> String
 toString Nothing = "0"
 toString (Just n) = show n

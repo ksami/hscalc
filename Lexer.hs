@@ -23,13 +23,14 @@ isOperator :: Char -> Bool
 isOperator '+' = True
 isOperator '-' = True
 isOperator '*' = True
+isOperator '/' = True
 isOperator _ = False
 
 flex :: String -> Expr
 flex "" = [Just ("End", "\0")]
 flex all@(x:xs)
     | isNumber x =
-        let (num, rest) = span (isNumber) all
+        let (num, rest) = span (\n -> isNumber n || n=='.') all
         in Just ("Num", num) : flex rest
     | isOperator x = Just ("Op", [x]) : flex xs
     | isSpace x = flex xs
